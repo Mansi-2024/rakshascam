@@ -42,6 +42,8 @@ class Settings:
         raw_origins = os.getenv("CORS_ORIGINS", "")
         if raw_origins:
             return [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
+        if self.ENVIRONMENT == "production":
+            return ["https://rakshascan.vercel.app"]
         return [
             "http://localhost:3000",
             "http://127.0.0.1:3000",

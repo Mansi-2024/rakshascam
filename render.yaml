@@ -1,0 +1,19 @@
+# Render Blueprint configuration for RakshaScan Backend
+# SANGYAN 2026 Hackathon | Track A: Digital Fraud & Scam Resilience
+
+services:
+  - type: web
+    name: rakshascan-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    branch: main
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: CORS_ORIGINS
+        value: https://rakshascan.vercel.app
+      - key: LOG_LEVEL
+        value: INFO
