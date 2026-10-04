@@ -6,6 +6,8 @@ import { SeverityBadge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { TrustChainVisualizer } from "@/components/trust-chain/TrustChainVisualizer";
 import { ScamJourneyTimeline } from "@/components/scam-journey/ScamJourneyTimeline";
+import { TrustBreakpointCard } from "@/components/analysis/TrustBreakpointCard";
+import { MOCK_TRUST_BREAKPOINT } from "@/lib/mockData";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -90,6 +92,11 @@ export function AnalysisResultPreview({ result }: AnalysisResultPreviewProps) {
                   </li>
                 ))}
               </ul>
+            </div>
+
+            {/* Signature Feature: Trust Breakpoint / Where Should I Stop? */}
+            <div className="pt-2">
+              <TrustBreakpointCard breakpoint={result.trustBreakpoint || MOCK_TRUST_BREAKPOINT} />
             </div>
 
             {/* View Navigation Tabs */}

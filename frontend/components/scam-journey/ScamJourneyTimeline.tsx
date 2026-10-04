@@ -246,6 +246,13 @@ export function ScamJourneyTimeline({
                     <h5 className="text-xs font-bold text-white leading-tight">
                       {stage.title}
                     </h5>
+                    {(stage.stage_type === "DEPOSIT_REQUEST" || stage.order === 5) && (
+                      <div className="pt-1">
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-red-950/90 text-red-300 border border-red-500/50">
+                          🔴 Recommended stop point
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Summary Metric Chips */}
@@ -291,7 +298,14 @@ export function ScamJourneyTimeline({
                       {renderStageIcon(stage.order, "h-4 w-4")}
                     </div>
                     <div>
-                      <h5 className="text-xs font-bold text-white">{stage.title}</h5>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <h5 className="text-xs font-bold text-white">{stage.title}</h5>
+                        {(stage.stage_type === "DEPOSIT_REQUEST" || stage.order === 5) && (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-red-950/90 text-red-300 border border-red-500/50">
+                            🔴 Recommended stop point
+                          </span>
+                        )}
+                      </div>
                       <span className="text-[10px] font-mono text-slate-400">
                         {stage.evidence_ids.length} Evidence • {stage.signal_ids.length} Signals
                       </span>

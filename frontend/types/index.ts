@@ -107,6 +107,7 @@ export interface AnalysisResult {
   scamJourneyStages: ScamJourneyStage[];
   safeNextSteps: string[];
   isMockExample: boolean;
+  trustBreakpoint?: TrustBreakpointData;
 }
 
 export interface ExtractedSignal {
@@ -176,8 +177,26 @@ export interface WebsiteAnalysisData {
   scam_journey?: ScamJourneyData;
   safe_response?: SafeResponseData;
   recovery_guidance?: RecoveryGuidanceData;
+  trust_breakpoint?: TrustBreakpointData;
 }
 
+export type TrustBreakpointStatus =
+  | "RECOMMENDED_STOP"
+  | "NO_EXPLICIT_STOP"
+  | "INSUFFICIENT_EVIDENCE";
+
+export interface TrustBreakpointData {
+  status: TrustBreakpointStatus;
+  title: string;
+  action_text: string;
+  amount?: string | null;
+  reason: string;
+  supporting_signals: string[];
+  evidence_ids: string[];
+  confidence: "LOW" | "MEDIUM" | "HIGH";
+  source_stage?: string;
+  disclaimer: string;
+}
 
 export interface TrustChainNodeData {
   node_id: string;

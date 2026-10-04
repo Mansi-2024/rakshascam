@@ -20,9 +20,9 @@ export function FeatureSection() {
       description:
         "RakshaScan connects claims, entities, registrations, websites, and settlement vectors into an explicit chain. Rather than guessing legitimacy, it reveals precisely where the chain of evidence snaps.",
       points: [
-        "Traces claimed company name to actual Ministry of Corporate Affairs (MCA) filings",
-        "Cross-references declared advisory licenses against SEBI public registers",
-        "Detects disconnected banking and payment rails (e.g. personal UPI VPAs)",
+        "Designed to cross-reference regulatory claims against authoritative public records",
+        "Analyzes identity and registration claims against available verification evidence",
+        "Separates observed promotional claims from authoritative verification",
       ],
     },
     {

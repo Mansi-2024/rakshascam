@@ -168,30 +168,32 @@ export function AnalysisInputCard({ onAnalyze, isAnalyzing, externalError }: Ana
     }, "image/png");
   };
 
+  const handleLoadDemoMessage = () => {
+    const demoMessage =
+      "URGENT: SEBI approved guaranteed investment opportunity.\n" +
+      "Earn 25% monthly with zero risk.\n" +
+      "Only 10 investor slots remaining.\n" +
+      "Deposit ₹20,000 today to activate your account.\n" +
+      "To withdraw your profit, pay a refundable processing tax.\n" +
+      "Official portal: https://example-finance.test";
+    setActiveTab("message");
+    setMessageInput(demoMessage);
+    setInputError(null);
+  };
+
   const handleUseDemo = () => {
     if (activeTab === "message") {
-      const demoMessage =
-        "URGENT: SEBI approved guaranteed investment opportunity.\n" +
-        "Earn 25% monthly with zero risk.\n" +
-        "Only 10 investor slots remaining.\n" +
-        "Deposit ₹20,000 today to activate your account.\n" +
-        "To withdraw your profit, pay a refundable processing tax.\n" +
-        "Official portal: https://example-finance.test";
-      setMessageInput(demoMessage);
-      setInputError(null);
-      onAnalyze(demoMessage, "message");
+      handleLoadDemoMessage();
     } else if (activeTab === "screenshot") {
       handleGenerateFictionalScreenshot();
     } else if (activeTab === "website") {
       const demoUrl = "https://example-finance.test";
       setUrlInput(demoUrl);
       setInputError(null);
-      onAnalyze(demoUrl, "website");
     } else {
       const demoEntity = "Example Wealth Advisors Private Limited";
       setEntityInput(demoEntity);
       setInputError(null);
-      onAnalyze(demoEntity, "entity");
     }
   };
 
@@ -241,16 +243,27 @@ export function AnalysisInputCard({ onAnalyze, isAnalyzing, externalError }: Ana
 
         <CardContent className="p-6 sm:p-8">
           {/* Card Header */}
-          <div className="mb-6 space-y-1">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-blue-400" />
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-                What do you want to verify?
-              </h2>
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-5 w-5 text-blue-400" />
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                  What do you want to verify?
+                </h2>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-300">
+                Submit a financial message, screenshot, website, or entity to trace the evidence behind the claim.
+              </p>
             </div>
-            <p className="text-xs sm:text-sm text-slate-300">
-              Submit a financial message, screenshot, website, or entity to trace the evidence behind the claim.
-            </p>
+            <button
+              type="button"
+              onClick={handleLoadDemoMessage}
+              className="inline-flex items-center gap-1.5 self-start sm:self-center text-xs font-semibold text-amber-300 hover:text-amber-200 bg-amber-950/40 hover:bg-amber-900/50 px-3.5 py-2 rounded-xl border border-amber-600/40 transition-all shadow-sm shrink-0"
+              title="Loads the fictional demonstration message"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+              <span>Try demo message</span>
+            </button>
           </div>
 
           {/* Unified 4-Mode Segmented Control */}

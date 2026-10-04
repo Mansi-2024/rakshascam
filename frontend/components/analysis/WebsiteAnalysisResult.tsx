@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { TrustChainVisualizer } from "@/components/trust-chain/TrustChainVisualizer";
 import { ScamJourneyTimeline } from "@/components/scam-journey/ScamJourneyTimeline";
 import { SafeResponseSection } from "@/components/analysis/SafeResponseSection";
+import { TrustBreakpointCard } from "@/components/analysis/TrustBreakpointCard";
+import { computeTrustBreakpoint } from "@/lib/trustBreakpoint";
 import { useLanguage } from "@/lib/i18n";
 import {
   Globe,
@@ -137,9 +139,10 @@ export function WebsiteAnalysisResult({ data }: WebsiteAnalysisResultProps) {
 
 
   const [expandedSignals, setExpandedSignals] = React.useState<Record<string, boolean>>({});
+  const [selectedClaimId, setSelectedClaimId] = React.useState<string | null>(null);
 
   const entities = data.entities || [];
-  const claims = data.claims || [];
+  const claims = React.useMemo(() => data.claims || [], [data.claims]);
   const regulatoryRefs = data.regulatory_references || [];
   const financialClaims = data.financial_claims || [];
   const relationships = data.identity_relationships || [];
@@ -150,6 +153,17 @@ export function WebsiteAnalysisResult({ data }: WebsiteAnalysisResultProps) {
   const evSummary = data.evidence_summary;
 
   const concernInfo = getConcernBadge(assessment?.overall_level);
+
+  const trustBreakpoint = React.useMemo(() => {
+    return computeTrustBreakpoint(data);
+  }, [data]);
+
+  const activeSelectedClaim = React.useMemo(() => {
+    if (selectedClaimId) {
+      return claims.find((c) => c.id === selectedClaimId) || claims[0] || null;
+    }
+    return claims[0] || null;
+  }, [claims, selectedClaimId]);
 
   const toggleSignal = (sigId: string) => {
     setExpandedSignals((prev) => ({ ...prev, [sigId]: !prev[sigId] }));
@@ -472,6 +486,18 @@ export function WebsiteAnalysisResult({ data }: WebsiteAnalysisResultProps) {
           </div>
         )}
 
+        {/* SIGNATURE TRACK A FEATURE: TRUST BREAKPOINT / WHERE SHOULD I STOP? */}
+        <div id="trust-breakpoint-section">
+          <TrustBreakpointCard
+            breakpoint={trustBreakpoint}
+            onViewEvidence={() => {
+              setActiveTab("evidence");
+              const el = document.getElementById("detailed-inspection-card");
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          />
+        </div>
+
         {/* PHASE 9 & 10 SAFE RESPONSE & RECOVERY GUIDANCE */}
         <SafeResponseSection
           safeResponse={data.safe_response}
@@ -481,7 +507,7 @@ export function WebsiteAnalysisResult({ data }: WebsiteAnalysisResultProps) {
 
         {/* Tabbed Intelligence & Breakdown Card */}
         {data.fetch.success && (
-          <Card className="border-slate-800 bg-slate-900/90 shadow-xl overflow-hidden">
+          <Card id="detailed-inspection-card" className="border-slate-800 bg-slate-900/90 shadow-xl overflow-hidden scroll-mt-20">
             <CardHeader className="pb-3 border-b border-slate-800">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
@@ -917,15 +943,132 @@ export function WebsiteAnalysisResult({ data }: WebsiteAnalysisResultProps) {
                     <span className="font-mono text-slate-400 text-[11px]">{claims.length} Claims</span>
                   </div>
 
+                  {/* CLAIM -> EVIDENCE SPOTLIGHT CARD */}
+                  {activeSelectedClaim && (
+                    <div className="p-5 rounded-2xl border border-cyan-500/40 bg-gradient-to-br from-cyan-950/30 via-slate-900/90 to-slate-950/95 space-y-4 shadow-xl shadow-cyan-950/20">
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-900/40 pb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+                          <span className="text-xs font-mono font-bold tracking-wider uppercase text-cyan-300">
+                            {t.claimSpotlightTitle}
+                          </span>
+                        </div>
+                        <span className="text-[11px] font-mono text-slate-400">
+                          {t.claimSpotlightSelectPrompt}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {/* Left: Claim & Source & Observation */}
+                        <div className="space-y-3">
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+                              CLAIM
+                            </span>
+                            <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-sm font-semibold text-white">
+                              &ldquo;{activeSelectedClaim.claim_text}&rdquo;
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div className="p-2.5 rounded-lg bg-slate-950/50 border border-slate-800/80 space-y-0.5">
+                              <span className="text-[10px] font-mono text-slate-400 uppercase font-bold">
+                                {t.claimSpotlightSource}
+                              </span>
+                              <p className="text-slate-300 font-mono text-[11px] truncate">
+                                {isMessage ? "User-submitted message" : isScreenshot ? "Screenshot OCR" : "Website content"}
+                              </p>
+                            </div>
+
+                            <div className="p-2.5 rounded-lg bg-slate-950/50 border border-slate-800/80 space-y-0.5">
+                              <span className="text-[10px] font-mono text-slate-400 uppercase font-bold">
+                                CLAIM TYPE
+                              </span>
+                              <p className="text-cyan-300 font-mono text-[11px]">
+                                {activeSelectedClaim.claim_type}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+                              {t.claimSpotlightObservation}
+                            </span>
+                            <p className="text-xs text-slate-300 bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/80 leading-relaxed">
+                              {activeSelectedClaim.claim_type === "REGULATORY" || /sebi|rbi|mca/i.test(activeSelectedClaim.claim_text)
+                                ? "The message claims regulatory approval. Regulatory authority claims should always be checked against authoritative sources before sending money."
+                                : activeSelectedClaim.claim_type === "FINANCIAL" || /guarantee|25%|return/i.test(activeSelectedClaim.claim_text)
+                                ? "The message promises specific high-yield or guaranteed returns with zero risk."
+                                : activeSelectedClaim.evidence_text || "Observed directly in submitted input."}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Right: Verification Status & Why It Matters */}
+                        <div className="space-y-3 flex flex-col justify-between">
+                          <div className="space-y-3">
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+                                {t.claimSpotlightVerification}
+                              </span>
+                              <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
+                                {getStatusBadge(
+                                  activeSelectedClaim.verification?.status || activeSelectedClaim.verification_status,
+                                  activeSelectedClaim.verification?.is_demo
+                                )}
+                                {activeSelectedClaim.verification?.reason && (
+                                  <p className="text-xs text-slate-300 leading-relaxed">
+                                    {activeSelectedClaim.verification.reason}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+                                {t.claimSpotlightWhyItMatters}
+                              </span>
+                              <p className="text-xs text-amber-200/90 bg-amber-950/20 p-2.5 rounded-lg border border-amber-900/40 leading-relaxed">
+                                Regulatory authority claims should be verified against authoritative public records before sending money. RakshaScan separates observed claims from authoritative verification.
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="pt-2 flex items-center justify-end">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setActiveTab("evidence");
+                                const el = document.getElementById("detailed-inspection-card");
+                                if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                              }}
+                              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-cyan-950 hover:bg-cyan-900/80 text-cyan-300 text-xs font-semibold border border-cyan-700/60 transition-colors"
+                            >
+                              <span>{t.claimSpotlightViewEvidence}</span>
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {claims.length === 0 ? (
                     <p className="text-xs text-slate-500 italic p-4 text-center">No explicit claims identified.</p>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                      {claims.map((claim) => (
-                        <div
-                          key={claim.id}
-                          className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-3 flex flex-col justify-between"
-                        >
+                      {claims.map((claim) => {
+                        const isSelected = activeSelectedClaim?.id === claim.id;
+                        return (
+                          <div
+                            key={claim.id}
+                            onClick={() => setSelectedClaimId(claim.id)}
+                            className={`p-4 rounded-xl transition-all cursor-pointer space-y-3 flex flex-col justify-between ${
+                              isSelected
+                                ? "bg-slate-900 border-2 border-cyan-500/80 shadow-lg shadow-cyan-950/30 ring-1 ring-cyan-500/50"
+                                : "bg-slate-950/70 border border-slate-800 hover:border-slate-700 hover:bg-slate-900/60"
+                            }`}
+                          >
                           <div className="space-y-2">
                             <div className="flex flex-wrap items-center justify-between gap-1.5">
                               <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800/40">
@@ -968,9 +1111,10 @@ export function WebsiteAnalysisResult({ data }: WebsiteAnalysisResultProps) {
                             </p>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                      );
+                    })}
+                  </div>
+                )}
                 </div>
               )}
 

@@ -100,6 +100,29 @@ export interface Translations {
   timelineTitle: string;
   timelineSubtitle: string;
 
+  // Trust Breakpoint / Where Should I Stop?
+  trustBreakpointTitle: string;
+  trustBreakpointBadge: string;
+  trustBreakpointStopPrefix: string;
+  trustBreakpointStopGeneric: string;
+  trustBreakpointWhy: string;
+  trustBreakpointSupportingSignals: string;
+  trustBreakpointViewEvidence: string;
+  trustBreakpointRecommendedStop: string;
+  trustBreakpointNoExplicitPayment: string;
+  trustBreakpointNoExplicitPaymentDesc: string;
+  trustBreakpointInsufficientEvidence: string;
+  trustBreakpointSimpleModeExplanation: string;
+
+  // Claim Spotlight
+  claimSpotlightTitle: string;
+  claimSpotlightSource: string;
+  claimSpotlightObservation: string;
+  claimSpotlightVerification: string;
+  claimSpotlightWhyItMatters: string;
+  claimSpotlightViewEvidence: string;
+  claimSpotlightSelectPrompt: string;
+
   // Disclaimers & Notices
   disclaimerText: string;
   recoveryDisclaimerText: string;
@@ -206,6 +229,27 @@ export const translations: Record<Language, Translations> = {
     timelineTitle: "Observed Incident Timeline",
     timelineSubtitle: "Milestones established strictly from observed submission artifacts and user declarations",
 
+    trustBreakpointTitle: "Where should you stop?",
+    trustBreakpointBadge: "TRUST BREAKPOINT",
+    trustBreakpointStopPrefix: "STOP BEFORE SENDING",
+    trustBreakpointStopGeneric: "STOP BEFORE SENDING MONEY",
+    trustBreakpointWhy: "WHY?",
+    trustBreakpointSupportingSignals: "Supporting signals",
+    trustBreakpointViewEvidence: "View supporting evidence",
+    trustBreakpointRecommendedStop: "Recommended stop point",
+    trustBreakpointNoExplicitPayment: "NO EXPLICIT PAYMENT STEP DETECTED",
+    trustBreakpointNoExplicitPaymentDesc: "RakshaScan identified risk signals, but the submitted content does not contain enough evidence to identify a specific financial transaction stop point.",
+    trustBreakpointInsufficientEvidence: "INSUFFICIENT EVIDENCE FOR STOP POINT",
+    trustBreakpointSimpleModeExplanation: "RakshaScan found the point where you are being asked to send money. This is where you should stop and verify first.",
+
+    claimSpotlightTitle: "Claim → Evidence Spotlight",
+    claimSpotlightSource: "SOURCE",
+    claimSpotlightObservation: "OBSERVATION",
+    claimSpotlightVerification: "VERIFICATION STATUS",
+    claimSpotlightWhyItMatters: "WHY IT MATTERS",
+    claimSpotlightViewEvidence: "View evidence",
+    claimSpotlightSelectPrompt: "Click any claim to inspect its underlying verification status and evidence.",
+
     disclaimerText: "RakshaScan provides safety and verification guidance. It does not provide investment advice, guarantee financial outcomes, or determine legal liability.",
     recoveryDisclaimerText: "If money or credentials may already have been exposed, immediately contact your financial provider through verified channels and preserve evidence.",
     ocrNoticeTitle: "Local OCR Notice",
@@ -309,6 +353,27 @@ export const translations: Record<Language, Translations> = {
     timelineTitle: "घटनाक्रम की समयरेखा",
     timelineSubtitle: "उपलब्ध साक्ष्य और आपके विवरण के आधार पर बना क्रम",
 
+    trustBreakpointTitle: "आपको कहाँ रुकना चाहिए?",
+    trustBreakpointBadge: "विश्वास खंड बिंदु (TRUST BREAKPOINT)",
+    trustBreakpointStopPrefix: "पैसे भेजने से पहले रुकें",
+    trustBreakpointStopGeneric: "पैसे भेजने से पहले रुकें",
+    trustBreakpointWhy: "क्यों?",
+    trustBreakpointSupportingSignals: "संबंधित जोखिम संकेत",
+    trustBreakpointViewEvidence: "संबंधित साक्ष्य देखें",
+    trustBreakpointRecommendedStop: "रुकने की अनुशंसित जगह",
+    trustBreakpointNoExplicitPayment: "पैसे भेजने का कोई प्रत्यक्ष कदम नहीं मिला",
+    trustBreakpointNoExplicitPaymentDesc: "रक्षास्कैन ने जोखिम संकेत पाए हैं, लेकिन प्रस्तुत सामग्री में पैसे भेजने या ट्रांसफर करने का कोई प्रत्यक्ष वित्तीय कदम नहीं मिला।",
+    trustBreakpointInsufficientEvidence: "रुकने का बिंदु तय करने के लिए अपर्याप्त साक्ष्य",
+    trustBreakpointSimpleModeExplanation: "रक्षास्कैन ने वह बिंदु पहचाना है जहाँ आपसे पैसे भेजने के लिए कहा जा रहा है। पैसे भेजने से पहले यहीं रुकें और पहले पुष्टि करें।",
+
+    claimSpotlightTitle: "दावा → साक्ष्य विस्तार (Spotlight)",
+    claimSpotlightSource: "स्रोत",
+    claimSpotlightObservation: "निरीक्षण",
+    claimSpotlightVerification: "सत्यापन स्थिति",
+    claimSpotlightWhyItMatters: "यह क्यों महत्वपूर्ण है?",
+    claimSpotlightViewEvidence: "साक्ष्य देखें",
+    claimSpotlightSelectPrompt: "किसी भी दावे पर क्लिक करके उसका सत्यापन और साक्ष्य देखें।",
+
     disclaimerText: "रक्षास्कैन केवल सुरक्षा और सत्यापन मार्गदर्शन प्रदान करता है। यह कोई कानूनी फैसला या निवेश सलाह नहीं देता है।",
     recoveryDisclaimerText: "यदि पैसे या क्रेडेंशियल्स साझा हुए हैं, तो तुरंत आधिकारिक बैंक चैनल का उपयोग करें और साक्ष्य सुरक्षित रखें।",
     ocrNoticeTitle: "स्थानीय ओसीआर सूचना",
@@ -410,6 +475,27 @@ export const translations: Record<Language, Translations> = {
 
     timelineTitle: "घटनाक्रम कालमर्यादा",
     timelineSubtitle: "दिलेल्या पुराव्यांवर आणि आपल्या माहितीवर आधारित घटनाक्रम",
+
+    trustBreakpointTitle: "आपण कोठे थांबावे?",
+    trustBreakpointBadge: "विश्वास खंड बिंदू (TRUST BREAKPOINT)",
+    trustBreakpointStopPrefix: "पैसे पाठवण्यापूर्वी थांबा",
+    trustBreakpointStopGeneric: "पैसे पाठवण्यापूर्वी थांबा",
+    trustBreakpointWhy: "का थांबायचे?",
+    trustBreakpointSupportingSignals: "संबंधित संशयास्पद संकेत",
+    trustBreakpointViewEvidence: "संबंधित पुरावे पहा",
+    trustBreakpointRecommendedStop: "थांबण्याची शिफारस केलेली जागा",
+    trustBreakpointNoExplicitPayment: "पैसे भरण्याची कोणतीही थेट मागणी आढळली नाही",
+    trustBreakpointNoExplicitPaymentDesc: "काही संशयास्पद संकेत आढळले आहेत, परंतु पैसे पाठवण्याची कोणतीही विशिष्ट रक्कम किंवा मागणी या मजकुरात दिसली नाही.",
+    trustBreakpointInsufficientEvidence: "थांबण्याचा बिंदू ठरवण्यासाठी अपुरे पुरावे",
+    trustBreakpointSimpleModeExplanation: "रक्षास्कॅनने असा टप्पा शोधून काढला आहे जिथे आपल्याकडे पैसे मागितले जात आहेत. पैसे पाठवण्यापूर्वी येथेच थांबा आणि खात्री करा.",
+
+    claimSpotlightTitle: "दावा → पुरावा विस्तार (Spotlight)",
+    claimSpotlightSource: "स्रोत",
+    claimSpotlightObservation: "निरीक्षण",
+    claimSpotlightVerification: "पडताळणी स्थिती",
+    claimSpotlightWhyItMatters: "हे का महत्त्वाचे आहे?",
+    claimSpotlightViewEvidence: "पुरावा तपासा",
+    claimSpotlightSelectPrompt: "कोणत्याही दाव्यावर क्लिक करून त्याची पडताळणी आणि पुरावे तपासा.",
 
     disclaimerText: "रक्षास्कॅन केवळ पडताळणी व सुरक्षिततेचे मार्गदर्शन करते. हा कोणताही कायदेशीर सल्ला किंवा निकाल नाही.",
     recoveryDisclaimerText: "पैसे किंवा माहिती उघड झाली असल्यास, बँकेच्या अधिकृत क्रमांकाशी त्वरित संपर्क साधा.",
