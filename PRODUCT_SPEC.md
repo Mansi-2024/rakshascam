@@ -53,6 +53,94 @@ Financial fraud and investment scams in India and globally have evolved into sop
 
 ## 5. Core Features
 
+### 5.0. Feature 0: Structured Intelligence & Evidence Layer (Phase 3 Foundation)
+
+Before authoritative verification (Phase 4) can occur, raw webpage observations must be converted into traceable, structured intelligence representations.
+
+#### The Core Principle: Extraction ≠ Verification
+- **Observed Signal**: Text, claims, or regulatory badges present on a target webpage.
+- **Verification**: Cross-checking with authoritative registries (SEBI, MCA, RBI) to confirm legal existence, active licensing, and identity alignment.
+- **Initial Verification Status**: Every extracted claim, reference, and relationship carries `verification_status: "UNKNOWN"`.
+- **Severity ≠ Fraud**: Severity on financial claims reflects the linguistic intensity of promises or urgency, not a determination of fraud.
+
+#### Structured Intelligence Objects:
+1. **`Entity`**:
+   - Types: `COMPANY`, `PERSON`, `ORGANIZATION`, `DOMAIN`, `UNKNOWN`.
+   - Captures contextual evidence and extraction source.
+2. **`Claim`**:
+   - Types: `REGULATORY`, `FINANCIAL`, `IDENTITY`, `AUTHORIZATION`, `OTHER`.
+   - Links the claim to a `subject_entity_id`, `referenced_authority`, `registration_reference`, and source evidence.
+3. **`RegulatoryReference`**:
+   - Identifies mentions of regulatory bodies (`SEBI`, `RBI`, `MCA`, `NSE`, `BSE`, `IRDAI`, `PFRDA`, `GOVERNMENT`).
+   - Links nearby registration numbers (e.g., `INA000099999`, CIN, GSTIN) via spatial context proximity.
+4. **`FinancialClaim`**:
+   - 11 deterministic linguistic categories: `GUARANTEED_RETURN`, `RISK_FREE`, `DOUBLE_MONEY`, `HIGH_RETURN`, `FIXED_RETURN`, `URGENCY`, `LIMITED_TIME`, `ACT_NOW`, `DEPOSIT_PRESSURE`, `WITHDRAWAL_FEE`, `ADDITIONAL_PAYMENT`.
+   - Severity tags: `LOW`, `MEDIUM`, `HIGH`.
+5. **`IdentityRelationship`**:
+   - Semantic graph edges: `OPERATES_DOMAIN`, `CLAIMS_AUTHORIZATION`, `REFERENCES_REGISTRATION`, `ASSOCIATED_WITH`, `LINKS_TO_EXTERNAL`.
+   - Carries `verification_status: "UNKNOWN"`.
+6. **`Evidence`**:
+   - Foundation of the **Claim → Evidence → Source** chain: captures `evidence_id`, `source_type`, `source_url`, `extracted_text`, `context`, and `extraction_method`.
+
+---
+
+### 5.0.1. Feature 0.1: Authoritative Verification Subsystem (Phase 4 Foundation)
+
+Transforms selected extracted claims from `UNKNOWN` into evidence-backed verification states when authoritative data is actually available.
+
+#### Core Verification Mandate:
+*"Verification results are only authoritative when derived from the identified authoritative source."*
+
+#### Distinct Verification States:
+- **`VERIFIED`**: Authoritative source provides positive evidence substantiating the claim.
+- **`CONTRADICTORY`**: Authoritative source provides evidence inconsistent with the claim (e.g. registration belongs to a different legal entity).
+- **`NOT_FOUND`**: Authoritative source was queried, but entity/registration was not found (`NOT_FOUND` ≠ Fraud).
+- **`UNKNOWN`**: Insufficient information exists to query (e.g. general regulator mention without license number; `UNKNOWN` ≠ Safe).
+- **`UNAVAILABLE`**: Authoritative source is unreachable or requires interactive human/CAPTCHA sessions (`UNAVAILABLE` ≠ Not Found).
+
+#### Non-Fabrication & Security Rules:
+- **Demo Mode**: Synthetically tested via `DemoVerificationAdapter` on fictional fixtures (`INA000099999`). Clearly tagged `is_demo: true` and labeled `[DEMO VERIFICATION]`.
+- **Real Regulators**: When official public OpenAPI endpoints are absent, adapters report `UNAVAILABLE` rather than executing brittle unauthenticated scrapers or CAPTCHA bypasses.
+- **Provenance Guaranteed**: Every verification result records `source_name`, `source_url`, `checked_at`, `verification_method`, `evidence`, and objective non-prejudicial `reason`.
+
+---
+
+### 5.0.2. Feature 0.2: Evidence-Backed Risk Assessment Subsystem (Phase 5)
+
+Transforms extracted claims, verbatim evidence records, and verification states into an explainable, evidence-backed assessment without arbitrary numerical scoring.
+
+#### Guiding Mandate:
+> **"RakshaScan produces evidence-backed concern assessments, not fraud verdicts."**
+> A risk signal without supporting evidence is invalid. The system never proclaims "This is a scam" based on keyword detection.
+
+#### Assessment Concern Levels:
+1. **`INSUFFICIENT_EVIDENCE`**: Insufficient observed textual content or evidence items (< 2 records) to formulate a reliable assessment.
+2. **`LOW_CONCERN`**: No high-severity signals observed; at most minor low-risk observations with no regulatory contradictions.
+3. **`MODERATE_CONCERN`**: Multiple medium-severity signals, unverified regulatory assertions, or unconfirmed license numbers.
+4. **`HIGH_CONCERN`**: One or more high-severity regulatory/identity contradictions or multiple independent high-severity financial/manipulation claims.
+
+#### 10 Deterministic Risk Rules:
+- **Rule 1 (Guaranteed Return)**: `GUARANTEED_RETURN` → `FINANCIAL`, `HIGH`.
+- **Rule 2 (Risk-Free Language)**: `RISK_FREE` → `FINANCIAL`, `HIGH`.
+- **Rule 3 (Double-Money Language)**: `DOUBLE_MONEY` → `FINANCIAL`, `HIGH`.
+- **Rule 4 (Deposit Pressure)**: `DEPOSIT_PRESSURE` → `MANIPULATION`, `HIGH`.
+- **Rule 5 (Withdrawal Fee / Extra Payment)**: `WITHDRAWAL_FEE` / `ADDITIONAL_PAYMENT` → `FINANCIAL`, `HIGH`.
+- **Rule 6 (Urgency / Act Now)**: `URGENCY` / `ACT_NOW` → `MANIPULATION`, `MEDIUM`.
+- **Rule 7 (Regulatory Claim Requiring Verification)**: Claim with status `UNKNOWN` or `UNAVAILABLE` → `REGULATORY`, `MEDIUM` (does not declare claim false).
+- **Rule 8 (Regulatory Contradiction)**: Claim with status `CONTRADICTORY` → `REGULATORY`, `HIGH` (states factual mismatch).
+- **Rule 9 (Registration Not Found)**: Verification status `NOT_FOUND` → `REGULATORY`, `MEDIUM` (explicitly notes that *not found does not by itself establish fraud*).
+- **Rule 10 (Entity Identity Mismatch)**: Registration belongs to a different entity → `IDENTITY`, `HIGH`.
+
+#### Signal Deduplication:
+- Redundant occurrences of matching linguistic patterns (e.g. multiple guaranteed return phrases) are consolidated into a single primary signal.
+- Full traceability is preserved: union of all supporting `evidence_ids` and `claim_ids` is retained.
+
+#### Epistemic Boundaries & Uncertainty:
+- The assessment explicitly surfaces epistemic boundaries: `NOT_FOUND ≠ FRAUD`, `UNKNOWN ≠ SAFE`, `UNAVAILABLE ≠ NOT_FOUND`.
+- Provides tailored, actionable Safe Next Steps (SEBI portal checks, consulting certified professionals) rather than aggressive or irreversible directives.
+
+---
+
 ### 5.1. Feature A: The Financial Trust Chain
 
 The cornerstone of RakshaScan is the **Financial Trust Chain**. Legitimate financial operations maintain an unbroken, verifiable link from their marketing claims down to their payment processing infrastructure:
@@ -82,52 +170,61 @@ The cornerstone of RakshaScan is the **Financial Trust Chain**. Legitimate finan
 [ Payment Identity (UPI / Bank Account) ]
 ```
 
-#### Node Relationship Statuses:
-Every link in the chain is evaluated and tagged with one of four explicit states:
-- **`VERIFIED`**: Independently substantiated by authoritative institutional records or cryptographic proof (e.g., domain matches official SEBI-registered broker directory).
-- **`UNVERIFIED`**: Claimed by the entity or promotion, but no independent public or regulatory record could confirm it.
-- **`CONTRADICTORY`**: Explicit mismatch detected between the claim and reality (e.g., claimed incorporation in 2012, but domain registered last week; or company registered to manufacture textiles while offering guaranteed crypto-forex returns).
-- **`UNKNOWN`**: Insufficient data available to evaluate the node without further user-supplied artifacts.
+#### Trust Chain Architecture & Data Model:
+- **Core Principle**: *"Trust Chain relationships are established only when supported by available evidence."*
+- **8 Node Tiers**: `CLAIM`, `ENTITY`, `REGISTRATION`, `OFFICIAL_IDENTITY`, `WEBSITE`, `APP`, `SOCIAL_ACCOUNT`, `PAYMENT_IDENTITY`.
+- **Node & Relationship Statuses**:
+  - **`VERIFIED`**: Independently substantiated by authoritative institutional records or cryptographic proof (e.g., domain matches official SEBI-registered broker directory).
+  - **`UNVERIFIED`**: Claimed on-page, but no independent public or regulatory record could confirm it.
+  - **`CONTRADICTORY`**: Explicit mismatch detected between the claim and reality (e.g., claimed registration number belongs to a different legal entity). Contradiction is reported explicitly without applying non-evidentiary "SCAM" labels.
+  - **`UNKNOWN`**: Insufficient data available to evaluate the node without further evidence.
+  - **`NOT_OBSERVED`**: Checked during analysis, but no supporting evidence was observed on the public website.
+  - **`UNAVAILABLE`**: Directory lookup was temporarily unreachable or restricted.
+- **Strict Status Non-Propagation**: Node statuses do not cascade across independent relationships (e.g., `REGISTRATION = VERIFIED` does not automatically verify `WEBSITE`).
+- **Dynamic Graph Summary**: Summarizes total relationships, verified, unverified, contradictory, unknown, and unobserved counts computed strictly from the active graph.
 
 ---
 
 ### 5.2. Feature B: Scam Journey Reconstruction
 
-Scams typically adhere to predictable social-engineering progressions. RakshaScan reconstructs the user's encounter as a **probable lifecycle pattern**:
+Scams typically adhere to predictable social-engineering progressions. RakshaScan reconstructs the user's encounter as a **reconstructed interaction pattern based on available evidence**:
+
+> **Mandatory Principle**: *"Scam Journey Reconstruction represents a possible/reconstructed interaction pattern and is not a determination of fraud."*
 
 ```
-[ 1. Initial Contact ]
-      │ (Unsolicited SMS / WhatsApp invite / Sponsored ad)
+[ 01 INITIAL_CONTACT ]
+      │ (Unsolicited promotional outreach / urgency pressure cues)
       ▼
-[ 2. Social Media / Channel Redirection ]
-      │ (Redirected to curated VIP group / Instagram handle)
+[ 02 FINANCIAL_CLAIM ]
+      │ (Guaranteed returns / risk-free promises / capital doubling)
       ▼
-[ 3. Landing Website ]
-      │ (High-yield presentation / Fabricated testimonials)
+[ 03 WEBSITE ]
+      │ (Public platform presenting branding, personas, and plans)
       ▼
-[ 4. Communication Channel ]
-      │ (Private Telegram coordinator / "Mentor" contact)
+[ 04 COMMUNICATION_CHANNEL ]
+      │ (Private phone desks, direct hotlines, WhatsApp / Telegram channels)
       ▼
-[ 5. Supposed Financial Expert ]
-      │ (Fake analyst certificate / Impersonated SEBI research analyst)
+[ 05 DEPOSIT_REQUEST ]
+      │ (Immediate capital mandates, priority settlement desks, quota locking)
       ▼
-[ 6. Custom App / Platform ]
-      │ (Off-market APK or rigged web dashboard showing simulated balances)
-      ▼
-[ 7. Initial Deposit Request ]
-      │ (Personal UPI ID or individual savings bank account)
-      ▼
-[ 8. Apparent Profit Generation ]
-      │ (Simulated astronomical gains displayed on UI)
-      ▼
-[ 9. Additional Payment Demands ]
-      │ ("Tax clearance fee", "liquidity deposit", or "VIP unlocking fee")
-      ▼
-[ 10. Withdrawal Block / Cessation ]
-        (Account frozen or handlers vanish)
+[ 06 WITHDRAWAL_ISSUE ]
+        (Advance tax clearance fees, margin maintenance preconditions)
 ```
 
-> **Design Guardrail**: This pipeline is explicitly presented as a **reconstructed / possible pattern based on matching indicators**, NEVER asserted as an absolute or legally adjudicated fact.
+#### Stage Statuses:
+- **`OBSERVED`**: Explicit concrete textual or contact signal evidence detected on the page.
+- **`SUSPECTED`**: Inferred from linguistic urgency cues or high-pressure allocations characteristic of outbound targeting.
+- **`NOT_OBSERVED`**: Checked during analysis, but no matching linguistic patterns or clauses were present.
+- **`UNKNOWN`**: External vector not visible in standalone public webpage analysis (e.g., private outbound chat DMs).
+
+#### Journey Reconstruction Confidence (LOW / MEDIUM / HIGH):
+- Confidence reflects **how strongly the available evidence supports reconstruction of the analytical model**, NOT a probability of fraud.
+- `HIGH` confidence means 4 or more stages are supported by observed/suspected signals.
+
+#### Mandatory Disclaimer:
+Prominently displayed verbatim across all API payloads and visual components:
+> *"This represents a reconstructed pattern, not a determination that a specific case is fraudulent."*
+
 
 ---
 
@@ -147,6 +244,85 @@ Instead of a generic risk score, every RakshaScan report answers seven critical 
 
 ---
 
+### 5.4. Feature D: Multi-Input Ingestion (Phase 8)
+
+Expands verification capabilities from standalone URLs to ubiquitous real-world attack vectors:
+
+1. **User-Submitted Chat & Message Ingestion**:
+   - Accepts copied messages from WhatsApp, Telegram, SMS, email, and social networks up to 15,000 characters.
+   - Extracts entities, regulatory assertions, financial claims, and urgency cues.
+   - Emits evidence records tagged with `source_type: "USER_SUBMITTED_MESSAGE"`.
+2. **Screenshot & Visual OCR Ingestion**:
+   - Accepts PNG, JPEG, and WEBP screenshot artifacts up to 10MB and 8000x8000 pixels.
+   - 100% offline local optical character recognition via in-memory buffers (`io.BytesIO`).
+   - Zero disk persistence, zero permanent database storage, zero cloud vision transmission.
+   - Emits evidence records tagged with `source_type: "SCREENSHOT_OCR"` and preserves OCR uncertainty notices.
+3. **Structured Non-Crawling URL Discovery**:
+   - Detects URLs embedded in text messages or OCR transcripts.
+   - Formats URLs as structured `links` for display and evidence association.
+   - Strictly refuses automated recursive crawling to avoid DoS amplification and uncontrolled SSRF traversal.
+4. **Single Unified Intelligence Pipeline**:
+   - All input modes normalize into `NormalizedAnalysisInput` and execute the identical structured extraction, verification, risk assessment, Trust Chain, and Scam Journey engines.
+
+---
+
+### 5.5. Feature E: Safe Response & Recovery System (Phase 9)
+
+Extends analysis output from *"What did we find?"* to *"What should the user safely do next?"*:
+
+1. **Action States (Not Fraud Verdicts)**:
+   - `SAFE_TO_CONTINUE_WITH_VERIFICATION`: Low concern baseline.
+   - `PAUSE_AND_VERIFY`: Moderate concern, unverified credentials, or high return promises.
+   - `HIGH_CAUTION`: Significant conflicting evidence, deposit pressure, or impersonation signals.
+   - `POST_INCIDENT_GUIDANCE`: Withdrawal fee friction, advance fee demands, or user-declared payment.
+   - `INSUFFICIENT_EVIDENCE`: Gaps prevent safe evaluation.
+2. **Context-Aware Deterministic Recommendations**:
+   - Every recommendation (`PAUSE`, `VERIFY`, `DO_NOT_SEND_ADDITIONAL_MONEY`, `DO_NOT_SHARE_CREDENTIALS`, `PRESERVE_EVIDENCE`, `CONTACT_BANK_OR_PAYMENT_PROVIDER`, `REPORT`) includes an actionable title, plain-language explanation, deterministic reason, and linked evidence/verification IDs.
+3. **Structured Post-Incident Recovery Protocols**:
+   - **Stop Further Money Transfers**: Refuse demands for release fees, processing taxes, or unlock deposits.
+   - **Preserve Documentation**: Retain unedited screenshots, payment handles, and bank reference IDs (UTR/RRN). Strictly forbids saving passwords, PINs, or OTPs.
+   - **Contact Financial Provider**: Directs victim to official bank/app customer support within the golden hour.
+   - **Report via Official Channels**: National Cyber Crime Reporting Portal (`cybercrime.gov.in`) or helpline `1930`.
+   - **Account Security**: Step-by-step password and UPI PIN resets from clean, independent devices.
+4. **User Interactive Control**:
+   - User-declared facts (*"Have you already transferred money?"*, *"Have you shared sensitive credentials?"*) dynamically activate tailored recovery guidance without backend database persistence.
+5. **Incident Timeline**:
+   - Reconstructs observed submission milestones and user declarations with zero unevidenced events.
+
+---
+
+### 5.6. Feature F: Bharat-First Multilingual Experience (Phase 10)
+
+Empowers non-English speaking citizens across India with accessible, vernacular safety guidance:
+
+1. **Trilingual Localization**:
+   - Native language support for **English (`en`)**, **Hindi (`hi`)**, and **Marathi (`mr`)**.
+   - Instant, client-side language switching without re-triggering analysis or altering underlying intelligence data.
+2. **Plain-Language Mode ("Simple explanation")**:
+   - One-click toggle transforming dense statutory terminology into accessible explanations without loss of nuance.
+3. **Regional Language Safety & Epistemic Boundaries**:
+   - Translates with strict preservation of uncertainty (e.g. *"यह दावा स्वतंत्र रूप से सत्यापित नहीं किया जा सका"* rather than *"यह फर्जी है"*).
+   - Regulatory license codes, CINs, URLs, phone numbers, payment handles, and evidence IDs remain untouched and exact across all languages.
+
+---
+
+### 5.7. Feature G: Production Hardening & Abuse Defense (Phase 11)
+
+Protects system resources, preserves user privacy, and standardizes production operational controls:
+
+1. **In-Process Sliding Window Rate Limiting**:
+   - Throttles requests by client IP across independent buckets (`url`: 30/min, `message`: 30/min, `screenshot`: 15/min).
+   - Emits HTTP 429 with standard `Retry-After` headers.
+2. **Strict Request Boundary Enforcement**:
+   - Enforces maximum sizing bounds (URL: 2048 chars, Message: 15,000 chars, Image: 10MB/8000px) returning HTTP 413.
+   - Enforces file magic header signatures (`PNG`, `JPEG`, `WEBP`) to block polyglots.
+3. **Defensive Response Headers**:
+   - `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-XSS-Protection: 1; mode=block`.
+4. **Zero-Retention Telemetry**:
+   - Privacy-sanitizing operational logger redacts authentication parameters (`token`, `auth`, `password`, `key`) from URLs and completely excludes user content/transcripts from logs.
+
+---
+
 ## 6. Safe Next-Step Guidance Matrix
 
 When risks or unverified links are identified, RakshaScan provides context-specific defensive playbooks:
@@ -155,3 +331,14 @@ When risks or unverified links are identified, RakshaScan provides context-speci
 - **Asset Protection Measures**: Explicit instructions *never* to transfer funds to personal UPI handles or download third-party `.apk` packages.
 - **Reporting Channels**: Pre-formatted incident summaries ready to copy-paste into the National Cyber Crime Reporting Portal (`cybercrime.gov.in`) or report via helpline `1930`.
 - **Communication Containment**: Instructions on securing compromised messaging accounts and preserving chat logs as evidence.
+
+---
+
+## 7. Demo vs Production Specification
+
+- **Current Prototype State**: Operates against synthetic fixtures (`DemoVerificationAdapter`). Every claim verification outcome is explicitly flagged with `is_demo: true` and labeled in the user interface as *"Demonstration verification source — not a live statutory lookup"*.
+- **No Unauthorized Scrapers**: RakshaScan does not perform brittle or unauthorized screen-scraping against CAPTCHA-guarded government portals (SEBI, RBI, MCA).
+- **Production Integration**: Future production environments will connect to official statutory registry APIs via authenticated, read-only connector adapters.
+
+
+
