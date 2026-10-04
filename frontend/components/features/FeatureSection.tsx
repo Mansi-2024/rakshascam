@@ -34,7 +34,7 @@ export function FeatureSection() {
       description:
         "Warnings should never be opaque declarations. Every flag raised by RakshaScan is anchored by primary digital evidence, statutory regulations, and factual findings that any user can independently verify.",
       points: [
-        "Explicitly states 'What We Found', 'What We Verified', and 'What Remains Uncertain'",
+        "Explicitly states 'What We Found', 'What The Evidence Supports', and 'What Remains Uncertain'",
         "Quotes verbatim statutory rules (e.g. SEBI prohibition of guaranteed returns)",
         "Distinguishes between factual contradictions and missing public data",
       ],

@@ -168,7 +168,7 @@ export function TrustBreakpointCard({
             <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80 mt-4">
               <span className="text-[11px] text-slate-400">
                 {breakpoint.evidence_ids.length > 0
-                  ? `${breakpoint.evidence_ids.length} linked evidence records verified`
+                  ? `${breakpoint.evidence_ids.length} supporting evidence records`
                   : "Observable signals extracted from input"}
               </span>
 

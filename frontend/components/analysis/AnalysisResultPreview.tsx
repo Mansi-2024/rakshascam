@@ -167,11 +167,11 @@ export function AnalysisResultPreview({ result }: AnalysisResultPreviewProps) {
                     </ul>
                   </div>
 
-                  {/* 2. What We Verified */}
+                  {/* 2. What The Evidence Supports */}
                   <div className="p-5 rounded-xl border border-slate-800 bg-slate-950/60 space-y-3">
                     <div className="flex items-center gap-2 text-xs font-bold font-mono uppercase tracking-wider text-emerald-400">
                       <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                      <span>What we verified</span>
+                      <span>What the evidence supports</span>
                     </div>
                     <ul className="space-y-2.5 text-xs text-slate-300">
                       {result.findings.whatWeVerified.map((item, i) => (
